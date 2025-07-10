@@ -89,21 +89,11 @@ export const Admin: React.FC = () => {
         return;
       }
 
-      // Insert proxies based on position
-      if (position === 'prepend') {
-        // Insert at the beginning
-        for (const proxy of proxies.reverse()) {
-          await supabase.from('proxies').insert({
-            proxy_string: proxy.trim()
-          });
-        }
-      } else {
-        // Insert at the end
-        for (const proxy of proxies) {
-          await supabase.from('proxies').insert({
-            proxy_string: proxy.trim()
-          });
-        }
+      // Insert proxies at the end (append)
+      for (const proxy of proxies) {
+        await supabase.from('proxies').insert({
+          proxy_string: proxy.trim()
+        });
       }
 
       // Record upload history
@@ -111,15 +101,15 @@ export const Admin: React.FC = () => {
         uploaded_by: user.id,
         file_name: file.name,
         proxy_count: proxies.length,
-        position
+        position: 'append'
       });
 
-      toast.success(`${proxies.length}টি প্রক্সি সফলভাবে আপলোড হয়েছে`);
+      toast.success(`🎉 সফলভাবে ${proxies.length}টি প্রক্সি আপলোড সম্পন্ন হয়েছে!`);
       setFile(null);
       fetchUploadHistory();
       fetchProxyCount();
     } catch (error) {
-      toast.error('আপলোড করতে ত্রুটি');
+      toast.error('❌ আপলোড করতে ত্রুটি হয়েছে');
       console.error('Error uploading file:', error);
     }
     setLoading(false);
@@ -344,10 +334,10 @@ export const Admin: React.FC = () => {
                 <button
                   onClick={deleteAllProxies}
                   disabled={user?.role !== 'admin'}
-                  className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm"
+                  className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Database size={16} />
-                  <span>Delete All Proxies</span>
+                  <span>সব প্রক্সি মুছুন</span>
                 </button>
               )}
             </div>
@@ -370,9 +360,22 @@ export const Admin: React.FC = () => {
             <button
               type="submit"
               disabled={!file || loading}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 flex items-center space-x-3 font-medium"
             >
-              {loading ? 'আপলোড হচ্ছে...' : 'আপলোড'}
+              {loading ? (
+                <>
+                  <div className="relative">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 w-5 h-5 border-2 border-transparent border-t-blue-200 rounded-full animate-ping"></div>
+                  </div>
+                  <span className="animate-pulse">আপলোড শেষ না হওয়া পর্যন্ত অপেক্ষা করুন...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-5 h-5" />
+                  <span>আপলোড করুন</span>
+                </>
+              )}
             </button>
           </form>
           
@@ -381,7 +384,7 @@ export const Admin: React.FC = () => {
               <div className="flex items-center">
                 <Database className="h-4 w-4 text-blue-400 mr-2" />
                 <p className="text-blue-700 text-sm">
-                  <strong>Database Status:</strong> {totalProxies} proxies available in the system.
+                  <strong>ডাটাবেস স্ট্যাটাস:</strong> সিস্টেমে {totalProxies}টি প্রক্সি উপলব্ধ রয়েছে।
                 </p>
               </div>
             </div>
