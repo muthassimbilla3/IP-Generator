@@ -415,7 +415,6 @@ export const Admin: React.FC = () => {
             </div>
           )}
         </div>
-        )}
 
         {/* User Management Section - Only for Admin */}
         {user?.role === 'admin' && (
@@ -531,7 +530,7 @@ export const Admin: React.FC = () => {
                           ? 'bg-purple-100 text-purple-800' 
                           : userData.role === 'manager'
                           ? 'bg-orange-100 text-orange-800'
-                        {history.position === 'prepend' ? 'শুরুতে' : 'শেষে'}
+                          : 'bg-gray-100 text-gray-800'
                       }`}>
                         {userData.role === 'admin' ? 'অ্যাডমিন' : userData.role === 'manager' ? 'ম্যানেজার' : 'ইউজার'}
                       </span>
@@ -612,6 +611,7 @@ export const Admin: React.FC = () => {
             </table>
           </div>
         </div>
+        )}
 
         {/* Upload History Section - Only for Admin */}
         {user?.role === 'admin' && (
