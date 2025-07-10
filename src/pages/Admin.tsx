@@ -14,7 +14,7 @@ export const Admin: React.FC = () => {
   const [newUser, setNewUser] = useState({
     username: '',
     accessKey: '',
-    role: 'user' as 'admin' | 'user',
+    role: 'user' as 'admin' | 'manager' | 'user',
     dailyLimit: 500
   });
   const [editingUser, setEditingUser] = useState<string | null>(null);
