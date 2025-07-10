@@ -275,11 +275,11 @@ export const Admin: React.FC = () => {
   };
 
   const deleteAllProxies = async () => {
-    if (!confirm(`Are you sure you want to delete ALL ${totalProxies} proxies from the database? This action cannot be undone.`)) {
+    if (!confirm(`আপনি কি নিশ্চিত যে ডাটাবেস থেকে সব ${totalProxies}টি প্রক্সি মুছে ফেলতে চান? এই কাজটি আর ফিরিয়ে আনা যাবে না।`)) {
       return;
     }
 
-    if (!confirm('This will permanently delete all proxy data. Type "DELETE ALL" to confirm this is really what you want to do.')) {
+    if (!confirm('এটি স্থায়ীভাবে সব প্রক্সি ডেটা মুছে ফেলবে। আপনি কি সত্যিই এটি করতে চান?')) {
       return;
     }
 
@@ -291,10 +291,10 @@ export const Admin: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success('All proxies deleted successfully');
+      toast.success('🗑️ সব প্রক্সি সফলভাবে মুছে ফেলা হয়েছে');
       fetchProxyCount();
     } catch (error) {
-      toast.error('Error deleting proxies');
+      toast.error('❌ প্রক্সি মুছতে ত্রুটি হয়েছে');
       console.error('Error deleting all proxies:', error);
     }
   };
@@ -319,16 +319,16 @@ export const Admin: React.FC = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-900 flex items-center">
               <Upload className="mr-2 h-5 w-5" />
-              Proxy Management
+              প্রক্সি ম্যানেজমেন্ট
             </h2>
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-600">
-                Total Proxies: <span className="font-semibold text-blue-600">{totalProxies}</span>
+                মোট প্রক্সি: <span className="font-semibold text-blue-600">{totalProxies}</span>
               </div>
               {totalProxies > 0 && (
                 <button
                   onClick={deleteAllProxies}
-                  className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm"
+                  className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 text-sm font-medium shadow-lg hover:shadow-xl"
                 >
                   <Database size={16} />
                   <span>সব প্রক্সি মুছুন</span>
