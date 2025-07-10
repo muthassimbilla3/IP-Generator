@@ -176,18 +176,7 @@ export const Status: React.FC = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">সিস্টেম স্ট্যাটাস</h1>
-          {systemStats.totalProxies > 0 && (
-            <button
-              onClick={deleteAllProxies}
-              className="flex items-center space-x-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 text-sm font-medium shadow-lg hover:shadow-xl"
-            >
-              <Trash2 size={18} />
-              <span>সব প্রক্সি মুছুন</span>
-            </button>
-          )}
-        </div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">সিস্টেম স্ট্যাটাস</h1>
 
         {/* System Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -226,68 +215,11 @@ export const Status: React.FC = () => {
               <div>
                 <p className="text-orange-600 text-sm font-medium">মোট প্রক্সি</p>
                 <p className="text-2xl font-bold text-orange-900">{systemStats.totalProxies}</p>
-                {systemStats.totalProxies > 0 && (
-                  <div className="mt-2">
-                    <button
-                      onClick={deleteAllProxies}
-                      className="flex items-center space-x-1 text-xs text-red-600 hover:text-red-800 transition-colors"
-                    >
-                      <Database size={12} />
-                      <span>সব মুছুন</span>
-                    </button>
-                  </div>
-                )}
               </div>
               <Calendar className="h-8 w-8 text-orange-600" />
             </div>
           </div>
         </div>
-
-        {/* Proxy Management Section */}
-        {systemStats.totalProxies > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-                  <Database className="mr-2 h-5 w-5" />
-                  প্রক্সি ম্যানেজমেন্ট
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  ডাটাবেসে মোট {systemStats.totalProxies}টি প্রক্সি রয়েছে, যার মধ্যে {availableProxies}টি উপলব্ধ।
-                </p>
-              </div>
-              <button
-                onClick={deleteAllProxies}
-                className="flex items-center space-x-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 font-medium shadow-lg hover:shadow-xl"
-              >
-                <Trash2 size={18} />
-                <span>সব প্রক্সি মুছুন</span>
-              </button>
-            </div>
-            
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-blue-600 text-sm font-medium">উপলব্ধ প্রক্সি</p>
-                    <p className="text-2xl font-bold text-blue-900">{availableProxies}</p>
-                  </div>
-                  <Activity className="h-6 w-6 text-blue-600" />
-                </div>
-              </div>
-              
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 text-sm font-medium">ব্যবহৃত প্রক্সি</p>
-                    <p className="text-2xl font-bold text-gray-900">{systemStats.usedProxies}</p>
-                  </div>
-                  <TrendingUp className="h-6 w-6 text-gray-600" />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* User Statistics Table - Only for Admin */}
         {(user?.role === 'admin' || user?.role === 'manager') && (
