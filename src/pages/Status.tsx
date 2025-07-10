@@ -24,7 +24,7 @@ export const Status: React.FC = () => {
   });
 
   useEffect(() => {
-    if (user?.role === 'admin') {
+    if (user?.role === 'admin' || user?.role === 'manager') {
       fetchUserStats();
       fetchSystemStats();
     }
@@ -196,7 +196,7 @@ export const Status: React.FC = () => {
         </div>
 
         {/* User Statistics Table - Only for Admin */}
-        {user?.role === 'admin' && (
+        {(user?.role === 'admin' || user?.role === 'manager') && (
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">ইউজার পরিসংখ্যান</h2>
             
