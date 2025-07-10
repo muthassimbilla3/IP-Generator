@@ -275,11 +275,6 @@ export const Admin: React.FC = () => {
   };
 
   const deleteAllProxies = async () => {
-    if (user?.role !== 'admin') {
-      toast.error('শুধুমাত্র অ্যাডমিন এই কাজ করতে পারে');
-      return;
-    }
-
     if (!confirm(`Are you sure you want to delete ALL ${totalProxies} proxies from the database? This action cannot be undone.`)) {
       return;
     }
@@ -333,8 +328,7 @@ export const Admin: React.FC = () => {
               {totalProxies > 0 && (
                 <button
                   onClick={deleteAllProxies}
-                  disabled={user?.role !== 'admin'}
-                  className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm"
                 >
                   <Database size={16} />
                   <span>সব প্রক্সি মুছুন</span>
