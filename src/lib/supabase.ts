@@ -13,7 +13,7 @@ export type User = {
   id: string;
   username: string;
   access_key: string;
-  role: 'admin' | 'user';
+  role: 'admin' | 'manager' | 'user';
   daily_limit: number;
   is_active: boolean;
   created_at: string;

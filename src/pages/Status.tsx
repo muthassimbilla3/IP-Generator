@@ -129,10 +129,10 @@ export const Status: React.FC = () => {
     });
   };
 
-  if (user?.role !== 'admin') {
+  if (user?.role !== 'admin' && user?.role !== 'manager') {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600">Only admins can access this page</p>
+        <p className="text-red-600">শুধুমাত্র অ্যাডমিন এবং ম্যানেজার এই পেজ দেখতে পারে</p>
       </div>
     );
   }
@@ -150,14 +150,14 @@ export const Status: React.FC = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">System Status</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">সিস্টেম স্ট্যাটাস</h1>
 
         {/* System Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-600 text-sm font-medium">Total Users</p>
+                <p className="text-blue-600 text-sm font-medium">মোট ইউজার</p>
                 <p className="text-2xl font-bold text-blue-900">{systemStats.totalUsers}</p>
               </div>
               <Users className="h-8 w-8 text-blue-600" />
@@ -167,7 +167,7 @@ export const Status: React.FC = () => {
           <div className="bg-green-50 rounded-lg p-6 border border-green-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-green-600 text-sm font-medium">Active Users</p>
+                <p className="text-green-600 text-sm font-medium">সক্রিয় ইউজার</p>
                 <p className="text-2xl font-bold text-green-900">{systemStats.activeUsers}</p>
               </div>
               <Activity className="h-8 w-8 text-green-600" />
@@ -177,7 +177,7 @@ export const Status: React.FC = () => {
           <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-600 text-sm font-medium">Available Proxies</p>
+                <p className="text-purple-600 text-sm font-medium">উপলব্ধ প্রক্সি</p>
                 <p className="text-2xl font-bold text-purple-900">{availableProxies}</p>
               </div>
               <TrendingUp className="h-8 w-8 text-purple-600" />
@@ -187,45 +187,47 @@ export const Status: React.FC = () => {
           <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-orange-600 text-sm font-medium">Total Proxies</p>
+              <p className="text-orange-600 text-sm font-medium">মোট প্রক্সি</p>
                 <p className="text-2xl font-bold text-orange-900">{systemStats.totalProxies}</p>
               </div>
               <Calendar className="h-8 w-8 text-orange-600" />
             </div>
           </div>
         </div>
+        )}
 
-        {/* User Statistics Table */}
+        {/* User Statistics Table - Only for Admin */}
+        {user?.role === 'admin' && (
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">User Statistics</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">ইউজার পরিসংখ্যান</h2>
           
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User
+                    ইউজার
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
+                    রোল
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    স্ট্যাটাস
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Daily Limit
+                    দৈনিক সীমা
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Today's Usage
+                    আজকের ব্যবহার
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    This Week
+                    এই সপ্তাহ
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Usage
+                    মোট ব্যবহার
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Last Used
+                    শেষ ব্যবহার
                   </th>
                 </tr>
               </thead>
@@ -246,9 +248,11 @@ export const Status: React.FC = () => {
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         stat.user.role === 'admin' 
                           ? 'bg-purple-100 text-purple-800' 
+                          : stat.user.role === 'manager'
+                          ? 'bg-orange-100 text-orange-800'
                           : 'bg-blue-100 text-blue-800'
                       }`}>
-                        {stat.user.role === 'admin' ? 'Admin' : 'User'}
+                        {stat.user.role === 'admin' ? 'অ্যাডমিন' : stat.user.role === 'manager' ? 'ম্যানেজার' : 'ইউজার'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -257,7 +261,7 @@ export const Status: React.FC = () => {
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-red-100 text-red-800'
                       }`}>
-                        {stat.user.is_active ? 'Active' : 'Inactive'}
+                        {stat.user.is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -286,7 +290,7 @@ export const Status: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {stat.lastUsed ? new Date(stat.lastUsed).toLocaleString() : 'Never'}
+                      {stat.lastUsed ? new Date(stat.lastUsed).toLocaleString() : 'কখনো না'}
                     </td>
                   </tr>
                 ))}

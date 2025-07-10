@@ -285,6 +285,11 @@ export const Admin: React.FC = () => {
   };
 
   const deleteAllProxies = async () => {
+    if (user?.role !== 'admin') {
+      toast.error('শুধুমাত্র অ্যাডমিন এই কাজ করতে পারে');
+      return;
+    }
+
     if (!confirm(`Are you sure you want to delete ALL ${totalProxies} proxies from the database? This action cannot be undone.`)) {
       return;
     }
@@ -309,10 +314,10 @@ export const Admin: React.FC = () => {
     }
   };
 
-  if (user?.role !== 'admin') {
+  if (user?.role !== 'admin' && user?.role !== 'manager') {
     return (
       <div className="text-center py-12">
-        <p className="text-red-600">Only admins can access this page</p>
+        <p className="text-red-600">শুধুমাত্র অ্যাডমিন এবং ম্যানেজার এই পেজ দেখতে পারে</p>
       </div>
     );
   }
@@ -320,7 +325,9 @@ export const Admin: React.FC = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Panel</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          {user?.role === 'admin' ? 'Admin Panel' : 'Manager Panel'}
+        </h1>
 
         {/* Proxy Upload Section */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
@@ -336,6 +343,7 @@ export const Admin: React.FC = () => {
               {totalProxies > 0 && (
                 <button
                   onClick={deleteAllProxies}
+                  disabled={user?.role !== 'admin'}
                   className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm"
                 >
                   <Database size={16} />
@@ -348,7 +356,7 @@ export const Admin: React.FC = () => {
           <form onSubmit={handleFileUpload} className="space-y-4">
             <div>
               <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-2">
-                Select TXT File
+                TXT ফাইল নির্বাচন করুন
               </label>
               <input
                 type="file"
@@ -361,7 +369,7 @@ export const Admin: React.FC = () => {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Insert Position
+                ইনসার্ট পজিশন
               </label>
               <div className="flex space-x-4">
                 <label className="flex items-center">
@@ -372,7 +380,7 @@ export const Admin: React.FC = () => {
                     onChange={(e) => setPosition(e.target.value as 'append')}
                     className="mr-2"
                   />
-                  Append to end
+                  শেষে যোগ করুন
                 </label>
                 <label className="flex items-center">
                   <input
@@ -382,7 +390,7 @@ export const Admin: React.FC = () => {
                     onChange={(e) => setPosition(e.target.value as 'prepend')}
                     className="mr-2"
                   />
-                  Prepend to beginning
+                  শুরুতে যোগ করুন
                 </label>
               </div>
             </div>
@@ -392,7 +400,7 @@ export const Admin: React.FC = () => {
               disabled={!file || loading}
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? 'Uploading...' : 'Upload'}
+              {loading ? 'আপলোড হচ্ছে...' : 'আপলোড'}
             </button>
           </form>
           
@@ -407,21 +415,23 @@ export const Admin: React.FC = () => {
             </div>
           )}
         </div>
+        )}
 
-        {/* User Management Section */}
+        {/* User Management Section - Only for Admin */}
+        {user?.role === 'admin' && (
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Users className="mr-2 h-5 w-5" />
-            User Management
+            ইউজার ম্যানেজমেন্ট
           </h2>
           
           {/* Create New User */}
           <form onSubmit={createUser} className="mb-6 bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-md font-medium text-gray-800 mb-3">Create New User</h3>
+            <h3 className="text-md font-medium text-gray-800 mb-3">নতুন ইউজার তৈরি করুন</h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="ইউজারনেম"
                 value={newUser.username}
                 onChange={(e) => setNewUser({...newUser, username: e.target.value})}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -429,7 +439,7 @@ export const Admin: React.FC = () => {
               />
               <input
                 type="text"
-                placeholder="Access Key"
+                placeholder="এক্সেস কী"
                 value={newUser.accessKey}
                 onChange={(e) => setNewUser({...newUser, accessKey: e.target.value})}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -437,15 +447,16 @@ export const Admin: React.FC = () => {
               />
               <select
                 value={newUser.role}
-                onChange={(e) => setNewUser({...newUser, role: e.target.value as 'admin' | 'user'})}
+                onChange={(e) => setNewUser({...newUser, role: e.target.value as 'admin' | 'manager' | 'user'})}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
+                <option value="user">ইউজার</option>
+                <option value="manager">ম্যানেজার</option>
+                <option value="admin">অ্যাডমিন</option>
               </select>
               <input
                 type="number"
-                placeholder="Daily Limit"
+                placeholder="দৈনিক সীমা"
                 value={newUser.dailyLimit}
                 onChange={(e) => setNewUser({...newUser, dailyLimit: parseInt(e.target.value)})}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -456,7 +467,7 @@ export const Admin: React.FC = () => {
               type="submit"
               className="mt-3 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
             >
-              Create User
+              ইউজার তৈরি করুন
             </button>
           </form>
 
@@ -466,22 +477,22 @@ export const Admin: React.FC = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User
+                    ফাইলের নাম
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Access Key
+                    এক্সেস কী
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
+                    প্রক্সি সংখ্যা
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Daily Limit
+                    পজিশন
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    তারিখ
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    অ্যাকশন
                   </th>
                 </tr>
               </thead>
@@ -518,9 +529,11 @@ export const Admin: React.FC = () => {
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         userData.role === 'admin' 
                           ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-blue-100 text-blue-800'
+                          : userData.role === 'manager'
+                          ? 'bg-orange-100 text-orange-800'
+                        {history.position === 'prepend' ? 'শুরুতে' : 'শেষে'}
                       }`}>
-                        {userData.role === 'admin' ? 'Admin' : 'User'}
+                        {userData.role === 'admin' ? 'অ্যাডমিন' : userData.role === 'manager' ? 'ম্যানেজার' : 'ইউজার'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -544,7 +557,7 @@ export const Admin: React.FC = () => {
                             : 'bg-red-100 text-red-800 hover:bg-red-200'
                         }`}
                       >
-                        {userData.is_active ? 'Active' : 'Inactive'}
+                        {userData.is_active ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
                       </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -600,12 +613,13 @@ export const Admin: React.FC = () => {
           </div>
         </div>
 
-        {/* Upload History Section */}
+        {/* Upload History Section - Only for Admin */}
+        {user?.role === 'admin' && (
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Upload History</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">আপলোড ইতিহাস</h2>
           
           {uploadHistory.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No upload history</p>
+            <p className="text-gray-500 text-center py-8">কোনো আপলোড ইতিহাস নেই</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
@@ -664,6 +678,7 @@ export const Admin: React.FC = () => {
             </div>
           )}
         </div>
+        )}
       </div>
     </div>
   );
