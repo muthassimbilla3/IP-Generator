@@ -367,34 +367,6 @@ export const Admin: React.FC = () => {
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ইনসার্ট পজিশন
-              </label>
-              <div className="flex space-x-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="append"
-                    checked={position === 'append'}
-                    onChange={(e) => setPosition(e.target.value as 'append')}
-                    className="mr-2"
-                  />
-                  শেষে যোগ করুন
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="prepend"
-                    checked={position === 'prepend'}
-                    onChange={(e) => setPosition(e.target.value as 'prepend')}
-                    className="mr-2"
-                  />
-                  শুরুতে যোগ করুন
-                </label>
-              </div>
-            </div>
-            
             <button
               type="submit"
               disabled={!file || loading}
